@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Xtreeme Fitness Studio</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Xtreeme Fitness Studio, New Town, Thiruverumbur, Trichy. Separate cardio and strength floors, 45+ machines, certified coaches and diet plans. Open from 5 AM.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+/* Layout: left-aligned single column on a concrete-grey floor; the one bold element is a loaded barbell whose plates carry the gym's facts. */
+:root {
+  --concrete: #e3e5e2;   /* gym floor */
+  --panel:    #f2f3f1;
+  --ink:      #15233b;   /* deep blue-black, the iron */
+  --muted:    #4a566a;
+  --rule:     #c4c8c4;
+  --red:      #c8202f;   /* 25 kg plate, also the action colour */
+  --blue:     #1d5bb5;   /* 20 kg */
+  --yellow:   #e9ad16;   /* 15 kg */
+  --green:    #2d8a47;   /* 10 kg */
+  --bar:      #8d949c;   /* bar steel */
+  --on-plate: #ffffff;
+  --display: "Big Shoulders Display", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --concrete: #141b26; --panel: #1b2433; --ink: #e8ebef; --muted: #a9b2c0; --rule: #2e3a4d;
+    --red: #e2404d; --blue: #4b86df; --yellow: #f0bb36; --green: #45a862; --bar: #6f7782;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --concrete: #141b26; --panel: #1b2433; --ink: #e8ebef; --muted: #a9b2c0; --rule: #2e3a4d;
+  --red: #e2404d; --blue: #4b86df; --yellow: #f0bb36; --green: #45a862; --bar: #6f7782;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--concrete);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+.wrap {
+  max-width: 72rem;
+  margin-inline: auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+h1, h2, h3 { font-family: var(--display); line-height: 0.95; margin: 0; text-wrap: balance; }
+h2 { font-size: clamp(2.25rem, 5vw, 3.5rem); font-weight: 800; }
+h3 { font-size: 1.6rem; font-weight: 800; }
+p { margin: 0; max-width: 62ch; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+
+/* Header */
+.top {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10;
+  background: var(--concrete);
+  border-bottom: 1px solid var(--rule);
+}
+.top .wrap { display: flex; align-items: center; gap: 1.5rem; padding-block: 0.75rem; }
+.mark { font-family: var(--display); font-weight: 900; font-size: 1.75rem; letter-spacing: 0.04em; text-decoration: none; line-height: 1; }
+.mark small { display: block; font-family: var(--body); font-weight: 400; font-size: 0.75rem; letter-spacing: 0; color: var(--muted); }
+.nav { display: flex; gap: 1.25rem; margin-left: auto; }
+.nav a { text-decoration: none; font-weight: 700; font-size: 0.95rem; }
+.nav a:hover { text-decoration: underline; text-underline-offset: 4px; }
+@media (max-width: 760px) { .nav { display: none; } .top .btn { margin-left: auto; } }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.8rem 1.3rem; border-radius: 999px;
+  font-weight: 700; text-decoration: none; border: 2px solid var(--ink);
+  transition: transform 0.15s ease;
+}
+.btn:active { transform: scale(0.97); }
+.btn-primary { background: var(--red); border-color: var(--red); color: var(--on-plate); }
+.btn-ghost { background: transparent; color: var(--ink); }
+.btn-sm { padding: 0.5rem 1rem; font-size: 0.9rem; }
+
+/* Hero */
+.hero { padding-block: clamp(2.5rem, 7vw, 5rem) 2rem; }
+.hero h1 { font-size: clamp(3.25rem, 11vw, 7.5rem); font-weight: 900; letter-spacing: -0.01em; max-width: 12ch; }
+.hero .lede { margin-top: 1.25rem; font-size: 1.2rem; color: var(--muted); }
+.ctas { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.75rem; }
+
+/* The barbell */
+.barbell { margin-top: 3rem; overflow: hidden; }
+.rack { position: relative; display: flex; align-items: center; height: 15rem; }
+.rack::before { /* the bar */
+  content: ""; position: absolute; left: -2rem; right: 0; top: 50%; height: 0.9rem;
+  transform: translateY(-50%); background: var(--bar); border-radius: 4px;
+}
+.collar { position: relative; width: 1.1rem; height: 3.6rem; background: var(--bar); border-radius: 3px; margin-left: 30%; }
+.plate {
+  position: relative; display: grid; place-items: center;
+  width: 2.6rem; border-radius: 0.6rem; color: var(--on-plate);
+  font-family: var(--display); font-weight: 800; font-size: 1rem;
+  writing-mode: vertical-rl; transform: rotate(180deg);
+  margin-left: 0.3rem;
+  animation: load 0.7s cubic-bezier(.2,.9,.3,1.15) both;
+}
+.p25 { height: 15rem; background: var(--red); animation-delay: 0.15s; }
+.p20 { height: 13rem; background: var(--blue); animation-delay: 0.3s; }
+.p15 { height: 11rem; background: var(--yellow); color: var(--ink); animation-delay: 0.45s; }
+.p10 { height: 9rem;  background: var(--green); animation-delay: 0.6s; }
+@keyframes load { from { translate: 60vw 0; } to { translate: 0 0; } }
+@media (prefers-reduced-motion: reduce) { .plate { animation: none; } .btn { transition: none; } html { scroll-behavior: auto; } }
+@media (max-width: 600px) {
+  .rack { height: 10rem; } .collar { margin-left: 12%; height: 2.6rem; }
+  .p25 { height: 10rem; } .p20 { height: 8.6rem; } .p15 { height: 7.2rem; } .p10 { height: 5.8rem; }
+  .plate { width: 2rem; font-size: 0.85rem; }
+}
+.facts { list-style: none; padding: 0; margin: 1.5rem 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: 1rem 2rem; }
+.facts li { display: grid; grid-template-columns: 0.9rem 1fr; gap: 0.75rem; align-items: start; }
+.facts li::before { content: ""; width: 0.9rem; height: 0.9rem; border-radius: 50%; margin-top: 0.35rem; background: var(--c); }
+.facts b { display: block; font-family: var(--display); font-size: 1.6rem; line-height: 1.1; }
+.facts span { color: var(--muted); font-size: 0.95rem; }
+
+/* Sections */
+section.block { padding-block: clamp(3rem, 8vw, 5.5rem); border-top: 1px solid var(--rule); }
+.block-head { display: grid; gap: 0.9rem; margin-bottom: 2.25rem; }
+.block-head p { color: var(--muted); }
+
+.floors { display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: 1.5rem; }
+.floor { background: var(--panel); border-radius: 1rem; padding: 1.75rem; display: grid; gap: 0.75rem; align-content: start; border-top: 0.5rem solid var(--c); }
+.floor ul { margin: 0; padding-left: 1.1rem; color: var(--muted); }
+
+.programmes { display: grid; grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr)); gap: 0; border-top: 2px solid var(--ink); }
+.programme { padding: 1.4rem 1.5rem 1.4rem 0; border-bottom: 1px solid var(--rule); display: grid; gap: 0.35rem; min-width: 0; }
+.programme p { color: var(--muted); }
+
+.coaches { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: 2rem 1.5rem; }
+.coach { display: grid; gap: 0.75rem; justify-items: start; }
+.disc { /* a weight plate seen face-on, with the bar hole */
+  width: 7.5rem; aspect-ratio: 1; max-width: 100%; border-radius: 50%;
+  background: radial-gradient(circle, var(--concrete) 0 0.85rem, var(--ink) 0.85rem 1.05rem, var(--c) 1.05rem);
+  display: grid; place-items: center; position: relative;
+}
+.disc span {
+  position: absolute; top: 0.9rem; font-family: var(--display); font-weight: 900; font-size: 1.4rem;
+  color: var(--on-plate);
+}
+.coach .role { color: var(--muted); font-size: 0.95rem; }
+
+.reviews { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 2.5rem; align-items: start; }
+@media (max-width: 760px) { .reviews { grid-template-columns: 1fr; } }
+.score { font-family: var(--display); font-weight: 900; font-size: clamp(6rem, 18vw, 10rem); line-height: 0.85; }
+.score small { font-size: 0.35em; color: var(--muted); }
+.stars { color: var(--yellow); font-size: 1.5rem; letter-spacing: 0.15em; }
+blockquote { margin: 0; font-size: 1.5rem; line-height: 1.35; font-style: italic; border-left: 0.4rem solid var(--red); padding-left: 1.25rem; }
+blockquote cite { display: block; margin-top: 0.75rem; font-size: 1rem; font-style: normal; color: var(--muted); }
+.themes { list-style: none; margin: 2rem 0 0; padding: 0; display: grid; gap: 0.9rem; }
+.themes li { padding-left: 1.25rem; border-left: 2px solid var(--rule); color: var(--muted); }
+.themes b { color: var(--ink); }
+
+.plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 1rem; }
+.plan { border: 2px solid var(--ink); border-radius: 1rem; padding: 1.4rem; display: grid; gap: 0.4rem; align-content: start; }
+.plan.feature { background: var(--ink); color: var(--concrete); }
+.plan.feature p { color: var(--concrete); opacity: 0.8; }
+.plan p { color: var(--muted); font-size: 0.95rem; }
+.plans-note { margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
+
+.visit { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: 2.5rem; }
+.hours { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.hours th, .hours td { text-align: left; padding: 0.7rem 0; border-bottom: 1px solid var(--rule); }
+.hours th { font-weight: 700; padding-right: 1rem; }
+.hours tr.today th, .hours tr.today td { color: var(--red); }
+address { font-style: normal; display: grid; gap: 0.35rem; }
+.phone { font-family: var(--display); font-weight: 800; font-size: 2rem; user-select: all; }
+.first-visit { margin: 0; padding-left: 1.2rem; display: grid; gap: 0.5rem; color: var(--muted); }
+
+footer { border-top: 1px solid var(--rule); padding-block: 2rem 6rem; color: var(--muted); font-size: 0.9rem; }
+footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; }
+
+/* Mobile action bar */
+.dock {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+  display: none; gap: 0.6rem;
+  padding: 0.6rem max(16px, env(safe-area-inset-right, 0px)) calc(0.6rem + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  background: var(--concrete); border-top: 1px solid var(--rule);
+}
+.dock .btn { flex: 1; justify-content: center; }
+@media (max-width: 760px) { .dock { display: flex; } }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="mark" href="#top">XTREEME<small>Fitness Studio, Trichy</small></a>
+    <nav class="nav" aria-label="Sections">
+      <a href="#floors">The gym</a>
+      <a href="#coaches">Coaches</a>
+      <a href="#plans">Plans</a>
+      <a href="#visit">Timings</a>
+    </nav>
+    <a class="btn btn-primary btn-sm" href="https://wa.me/917200562916?text=Hi%20Xtreeme%2C%20I%27d%20like%20to%20book%20a%20free%20trial." target="_blank" rel="noopener">Book a trial</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <h1>Two floors of iron in New Town, Thiruverumbur.</h1>
+      <p class="lede">A cardio floor and a separate strength floor, 45+ machines, and coaches who start you at your level. Open from 5 AM, six days a week.</p>
+      <div class="ctas">
+        <a class="btn btn-primary" href="https://wa.me/917200562916?text=Hi%20Xtreeme%2C%20I%27d%20like%20to%20book%20a%20free%20trial." target="_blank" rel="noopener">Book a free trial on WhatsApp</a>
+        <a class="btn btn-ghost" href="tel:+917200562916">Call 72005 62916</a>
+      </div>
+
+      <div class="barbell" aria-hidden="true">
+        <div class="rack">
+          <div class="collar"></div>
+          <div class="plate p25">25 KG</div>
+          <div class="plate p20">20 KG</div>
+          <div class="plate p15">15 KG</div>
+          <div class="plate p10">10 KG</div>
+        </div>
+      </div>
+      <ul class="facts">
+        <li style="--c: var(--red)"><div><b>4.9 out of 5</b><span>from 267 Google reviews</span></div></li>
+        <li style="--c: var(--blue)"><div><b>45+ machines</b><span>including 10 new ones</span></div></li>
+        <li style="--c: var(--yellow)"><div><b>3,500 sq ft</b><span>of training space</span></div></li>
+        <li style="--c: var(--green)"><div><b>Open 5 AM</b><span>Monday to Saturday, till 10 PM</span></div></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="block" id="floors">
+    <div class="wrap">
+      <div class="block-head">
+        <h2>One floor to sweat, one floor to lift.</h2>
+        <p>Cardio and heavy weights have their own floors, so you never wait behind a treadmill queue to reach the squat rack.</p>
+      </div>
+      <div class="floors">
+        <div class="floor" style="--c: var(--blue)">
+          <h3>Cardio floor</h3>
+          <p>For fat loss, stamina and warm-ups.</p>
+          <ul><li>Treadmills, cycles and cross-trainers</li><li>Space for circuits and core work</li></ul>
+        </div>
+        <div class="floor" style="--c: var(--red)">
+          <h3>Strength floor</h3>
+          <p>For muscle gain and serious lifting.</p>
+          <ul><li>Free weights, benches and racks</li><li>Plate-loaded and pin machines</li></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="programmes">
+    <div class="wrap">
+      <div class="block-head">
+        <h2>What you can train for</h2>
+        <p>Every membership comes with a coach who sets your plan and checks your form.</p>
+      </div>
+      <div class="programmes">
+        <div class="programme"><h3>Weight loss</h3><p>Cardio and strength combined, with a diet plan you can follow at home.</p></div>
+        <div class="programme"><h3>Muscle gain</h3><p>Progressive lifting on the strength floor, tracked week by week.</p></div>
+        <div class="programme"><h3>First time in a gym</h3><p>Coaches teach every machine slowly. Nobody rushes you.</p></div>
+        <div class="programme"><h3>Personal training</h3><p>One coach, one plan, every session together.</p></div>
+        <div class="programme"><h3>Diet plans</h3><p>Meal plans built around food you already eat in Trichy.</p></div>
+        <div class="programme"><h3>Strength and powerlifting</h3><p>Squat, bench and deadlift technique for people who want bigger numbers.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="coaches">
+    <div class="wrap">
+      <div class="block-head">
+        <h2>Coaches members ask for by name</h2>
+        <p>Our Google reviews mention them again and again.</p>
+      </div>
+      <div class="coaches">
+        <div class="coach"><div class="disc" style="--c: var(--red)"><span>S</span></div><h3>Sudhakar</h3><p class="role">Managing director</p></div>
+        <div class="coach"><div class="disc" style="--c: var(--blue)"><span>Y</span></div><h3>Yuvi</h3><p class="role">Coach</p></div>
+        <div class="coach"><div class="disc" style="--c: var(--yellow)"><span>N</span></div><h3>Naveen</h3><p class="role">Coach</p></div>
+        <div class="coach"><div class="disc" style="--c: var(--green)"><span>D</span></div><h3>Dinesh</h3><p class="role">Coach</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="reviews">
+    <div class="wrap reviews">
+      <div>
+        <div class="score">4.9<small>/5</small></div>
+        <div class="stars" aria-label="4.9 stars out of 5">★★★★★</div>
+        <p>267 reviews on Google</p>
+      </div>
+      <div>
+        <blockquote>“Largest gym in Trichy. Quality trainers and best fitness and diet plans.”<cite>Josi Jos, Google review</cite></blockquote>
+        <ul class="themes">
+          <li><b>Patient coaches.</b> One member says three coaches helped them get over years of fear about working out.</li>
+          <li><b>Fair fees.</b> A Trichy resident of 15 years says it costs less than other gyms and has better equipment.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="plans">
+    <div class="wrap">
+      <div class="block-head">
+        <h2>Plans</h2>
+        <p>Ask at the desk or on WhatsApp for today's fees.</p>
+      </div>
+      <div class="plans">
+        <div class="plan"><h3>Monthly</h3><p>Try the gym with no long commitment.</p></div>
+        <div class="plan"><h3>3 months</h3><p>Enough time to see real change.</p></div>
+        <div class="plan feature"><h3>6 months</h3><p>Half a year of steady training.</p></div>
+        <div class="plan"><h3>12 months</h3><p>A full year of training.</p></div>
+        <div class="plan"><h3>Personal training</h3><p>Add a dedicated coach to any plan.</p></div>
+      </div>
+      <div class="plans-note">
+        <a class="btn btn-primary" href="https://wa.me/917200562916?text=Hi%20Xtreeme%2C%20please%20send%20me%20your%20membership%20fees." target="_blank" rel="noopener">Get the fees on WhatsApp</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="visit">
+    <div class="wrap visit">
+      <div>
+        <h2>Timings</h2>
+        <table class="hours" style="margin-top:1.5rem">
+          <tbody>
+            <tr data-days="1,2,3,4,5,6"><th scope="row">Monday to Saturday</th><td>5:00 AM to 10:00 PM</td></tr>
+            <tr data-days="0"><th scope="row">Sunday</th><td>6:00 AM to 12:00 PM</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="display:grid;gap:1.25rem;align-content:start">
+        <h2>Find us</h2>
+        <address>
+          <span>Plot No. 10, Appding Building, near LIC Building</span>
+          <span>Above Specs Maker and Pommys</span>
+          <span>Vaithiyalingam Nagar, New Town, Thiruverumbur</span>
+          <span>Tiruchirappalli 620019</span>
+        </address>
+        <div class="phone">+91 72005 62916</div>
+        <div class="ctas" style="margin-top:0">
+          <a class="btn btn-ghost" href="https://www.google.com/maps/search/?api=1&amp;query=10.7940615,78.7619728" target="_blank" rel="noopener">Open in Google Maps</a>
+        </div>
+      </div>
+      <div style="display:grid;gap:1rem;align-content:start">
+        <h2>Your first visit</h2>
+        <ul class="first-visit">
+          <li>Bring a towel, a water bottle and clean indoor shoes.</li>
+          <li>Come 10 minutes early so a coach can show you around.</li>
+          <li>Tell your coach about any injury or health condition.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Xtreeme Fitness Studio, Thiruverumbur, Trichy</span>
+    <span>Demo site by X E N T A R A</span>
+  </div>
+</footer>
+
+<div class="dock">
+  <a class="btn btn-ghost" href="tel:+917200562916">Call</a>
+  <a class="btn btn-primary" href="https://wa.me/917200562916?text=Hi%20Xtreeme%2C%20I%27d%20like%20to%20book%20a%20free%20trial." target="_blank" rel="noopener">WhatsApp</a>
+</div>
+
+<script>
+  // Highlight today's opening hours.
+  (function () {
+    var d = String(new Date().getDay());
+    document.querySelectorAll('.hours tr').forEach(function (tr) {
+      if (tr.dataset.days.split(',').indexOf(d) !== -1) tr.classList.add('today');
+    });
+  })();
+</script>
+</body>
+</html>
