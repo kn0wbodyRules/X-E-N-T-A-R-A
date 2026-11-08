@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Ad (3D)</title>
+<style>
+  @font-face { font-family: UI; src: url("fonts/Inter-Variable.ttf"); font-weight: 100 900; }
+  html,body{margin:0;background:#000;height:100%} body{display:flex;align-items:center;justify-content:center} canvas{width:min(100vw,calc(100vh*16/9));aspect-ratio:16/9;display:block}
+</style></head><body><canvas id="c"></canvas>
+<script src="gl3d.js"></script>
+<script>
+// 3D "UI in space" ad starter (gl3d.js): every UI element is a flat panel whose texture is drawn with 2D canvas code
+// (so it stays razor sharp), placed in 3D, seen through one continuous camera. Motion blur = 12 sub-frames averaged.
+// Render with --gpu. Page contract: renderAt(t), TOTAL, ready, ?t=, ?scale=.
+const END = 8, W = 1920, H = 1080, q = new URLSearchParams(location.search), SCALE = parseFloat(q.get('scale') || '1');
+const cv = document.getElementById('c'); cv.width = W * SCALE; cv.height = H * SCALE; const MAIN = cv.getContext('2d'); let ctx = MAIN;
+const mk = () => { const c = document.createElement('canvas'); c.width = cv.width; c.height = cv.height; return c; };
+const BG = mk(), TMP = mk(), ACC = mk(), S3 = GL3D.create(W * SCALE, H * SCALE);
+const clamp01 = v => Math.max(0, Math.min(1, v)), lerp = (a, b, k) => a + (b - a) * k, prog = (t, a, b) => clamp01((t - a) / (b - a));
+const outExpo = k => (k = clamp01(k)) >= 1 ? 1 : 1 - Math.pow(2, -10 * k), inOutCubic = k => { k = clamp01(k); return k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
+const sine = k => 0.5 - 0.5 * Math.cos(Math.PI * clamp01(k)), L3 = (a, b, k) => [lerp(a[0], b[0], k), lerp(a[1], b[1], k), lerp(a[2], b[2], k)], add = (a, b) => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
+const TS = 2;   // texture supersampling
+function panel(w, h, pad, draw) {   // a 2D-canvas texture; call .redraw(args) whenever its content changes (identical args are skipped)
+  const c = document.createElement('canvas'); c.width = (w + pad * 2) * TS; c.height = (h + pad * 2) * TS; const p = { c, w: w + pad * 2, h: h + pad * 2, tex: null, key: null };
+  p.redraw = (...a) => { const key = JSON.stringify(a); if (key === p.key && p.tex) return p; p.key = key; const g = c.getContext('2d'); g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, c.width, c.height);
+    g.setTransform(TS, 0, 0, TS, pad * TS, pad * TS); const keep = ctx; ctx = g; draw(...a); ctx = keep; if (p.tex) p.tex.update(); else p.tex = S3.texture(c); return p; };
+  return p;
+}
+const T = {};
+function build() {
+  T.card = panel(540, 760, 60, () => { ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.55)'; ctx.shadowBlur = 60 * TS; ctx.shadowOffsetY = 24 * TS; ctx.beginPath(); ctx.roundRect(0, 0, 540, 760, 30); ctx.fillStyle = '#121212'; ctx.fill(); ctx.restore();
+    ctx.font = '800 54px UI, system-ui, sans-serif'; ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.fillText('Your product', 270, 640); }).redraw();
+  T.art = panel(460, 460, 0, () => { const g = ctx.createLinearGradient(0, 0, 460, 460); g.addColorStop(0, '#1FE39A'); g.addColorStop(1, '#4E3BFF'); ctx.beginPath(); ctx.roundRect(0, 0, 460, 460, 20); ctx.fillStyle = g; ctx.fill(); }).redraw();
+}
+function camera(t) {   // ONE continuous camera: fast-then-slow pull back, then a slow orbit that only ever turns one way
+  const D = Math.exp(lerp(Math.log(200), Math.log(1500), outExpo(prog(t, 0, 1.8)))), th = 0.35 * sine(prog(t, 1.5, END)), target = [0, 0, 0];
+  const eye = [target[0] + D * Math.sin(th), target[1] + 120 * Math.sin(th), target[2] + D * Math.cos(th)];
+  return { eye, target, fov: 34, focus: D, aperture: 0.3, fog: { near: 2400, far: 6500, color: [0.024, 0.03, 0.035] } };
+}
+function scene(t, cam) { return [{ tex: T.card.tex, w: T.card.w, h: T.card.h, pos: [0, 0, 0] }, { tex: T.art.tex, w: T.art.w, h: T.art.h, pos: [0, 80, 30], bias: 8 }]; }   // bias: draw order nudge for stacked panels
+const SUB = 12, SHUTTER = 0.5 / 60;   // 12 sub-frames over a 180-degree shutter (5 shows ghost copies on fast moves)
+let built = false;
+function render(t) {
+  if (!built) { build(); built = true; }
+  ctx = BG.getContext('2d'); ctx.setTransform(SCALE, 0, 0, SCALE, 0, 0); ctx.fillStyle = '#060709'; ctx.fillRect(0, 0, W, H);
+  const A = ACC.getContext('2d'); A.setTransform(1, 0, 0, 1, 0, 0); A.globalAlpha = 1; A.clearRect(0, 0, ACC.width, ACC.height);
+  for (let i = 0; i < SUB; i++) { const ts = Math.max(0, Math.min(END, t + (i / (SUB - 1) - 0.5) * SHUTTER)), cam = camera(ts);
+    ctx = TMP.getContext('2d'); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.drawImage(BG, 0, 0); ctx.drawImage(S3.render(scene(ts, cam), cam), 0, 0);
+    A.globalAlpha = 1 / (i + 1); A.drawImage(TMP, 0, 0); }
+  ctx = MAIN; ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.drawImage(ACC, 0, 0);
+}
+window.TOTAL = END; window.renderAt = t => render(t);
+window.ready = document.fonts.load('800 54px UI, system-ui, sans-serif').catch(() => {}).then(() => { if (q.has('t')) render(parseFloat(q.get('t'))); else (function tick(n) { render((n / 1000) % END); requestAnimationFrame(tick); })(0); return true; });
+</script></body></html>
